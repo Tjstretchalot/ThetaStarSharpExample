@@ -239,34 +239,37 @@ namespace ThetaStarSharpExample.World
             return IsInGrid(p.X, p.Y);
         }
 
-        public IEnumerable<Point> GetNodesAdjacentTo(Point position)
+        public IEnumerable<Point> GetNodesAdjacentTo(Entity ent, Point position)
         {
+            // For the sake of simplicity lets assume entity is a 1x1 tile.
+
+            Point tmp;
             if (position.X > 0)
             {
-                yield return new Point(position.X - 1, position.Y); // left
-
-                if (position.Y > 0)
-                    yield return new Point(position.X - 1, position.Y - 1); // upper left
-
-                if (position.Y < HeightInTiles - 1)
-                    yield return new Point(position.X - 1, position.Y + 1); // lower left
+                tmp = new Point(position.X - 1, position.Y);
+                if(this[tmp].MovementModifier != 0)
+                    yield return tmp; // left
             }
 
             if (position.Y > 0)
-                yield return new Point(position.X, position.Y - 1); // above
+            {
+                tmp = new Point(position.X, position.Y - 1);
+                if(this[tmp].MovementModifier != 0)
+                    yield return tmp; // above
+            }
 
             if (position.Y < HeightInTiles - 1)
-                yield return new Point(position.X, position.Y + 1); // below
+            {
+                tmp = new Point(position.X, position.Y + 1);
+                if(this[tmp].MovementModifier != 0)
+                    yield return tmp; // below
+            }
 
             if(position.X < WidthInTiles - 1)
             {
-                yield return new Point(position.X + 1, position.Y); //right
-
-                if (position.Y > 0)
-                    yield return new Point(position.X + 1, position.Y - 1); // upper right
-
-                if (position.Y < HeightInTiles - 1)
-                    yield return new Point(position.X + 1, position.Y + 1); // lower right
+                tmp = new Point(position.X + 1, position.Y);
+                if (this[tmp].MovementModifier != 0)
+                    yield return tmp; //right
             }
         }
     }

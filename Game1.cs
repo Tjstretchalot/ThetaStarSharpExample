@@ -206,7 +206,7 @@ namespace ThetaStarSharpExample
                         grid[gridPos] = new Tile(pathEndTexture, 1);
                         pathEnd = gridPos;
 
-                        currentPath = ThetaStarPathfinder<Entity, Point, SimpleGrid>.CalculatePath(grid, PathAnalyzor.GetHeuristicCost, PathAnalyzor.GetActualCost, 1, entity, pathStart.Value, pathEnd.Value);
+                        currentPath = ThetaStarPathfinder<Entity, Point, SimpleGrid>.CalculatePath(grid, PathAnalyzor.GetHeuristicCost, PathAnalyzor.GetActualCost, 1.01, entity, pathStart.Value, pathEnd.Value);
                         /*for(int i = 1; i < currentPath.Count; i++)
                         {
                             PathAnalyzor.GetActualCostImpl(grid, entity, currentPath[i - 1], currentPath[i], true);
