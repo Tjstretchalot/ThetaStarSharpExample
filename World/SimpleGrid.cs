@@ -241,35 +241,72 @@ namespace ThetaStarSharpExample.World
 
         public IEnumerable<Point> GetNodesAdjacentTo(Entity ent, Point position)
         {
-            // For the sake of simplicity lets assume entity is a 1x1 tile.
+            // For the sake of simplicity lets assume entity is a 1x1 tile. 
 
             Point tmp;
             if (position.X > 0)
             {
                 tmp = new Point(position.X - 1, position.Y);
-                if(this[tmp].MovementModifier != 0)
+                if (this[tmp].MovementModifier != 0) // left empty
+                {
                     yield return tmp; // left
+
+                    if (position.Y > 0)
+                    {
+                        tmp = new Point(position.X - 1, position.Y - 1); // upper left
+
+                        if (this[tmp].MovementModifier != 0 // upper left empty
+                            && this[position.X, position.Y - 1].MovementModifier != 0) // up empty
+                            yield return tmp;
+                    }
+
+                    if (position.Y < HeightInTiles - 1)
+                    {
+                        tmp = new Point(position.X - 1, position.Y + 1); // lower left
+                        if (this[tmp].MovementModifier != 0 // lower left empty
+                            && this[position.X, position.Y + 1].MovementModifier != 0) // down empty
+                            yield return tmp;
+                    }
+                }
             }
 
             if (position.Y > 0)
             {
                 tmp = new Point(position.X, position.Y - 1);
-                if(this[tmp].MovementModifier != 0)
+                if (this[tmp].MovementModifier != 0)
                     yield return tmp; // above
             }
 
             if (position.Y < HeightInTiles - 1)
             {
                 tmp = new Point(position.X, position.Y + 1);
-                if(this[tmp].MovementModifier != 0)
+                if (this[tmp].MovementModifier != 0)
                     yield return tmp; // below
             }
 
-            if(position.X < WidthInTiles - 1)
+            if (position.X < WidthInTiles - 1)
             {
                 tmp = new Point(position.X + 1, position.Y);
                 if (this[tmp].MovementModifier != 0)
+                { // right empty
                     yield return tmp; //right
+
+                    if (position.Y > 0)
+                    {
+                        tmp = new Point(position.X + 1, position.Y - 1); // upper right
+                        if (this[tmp].MovementModifier != 0 // upper right empty 
+                            && this[position.X, position.Y - 1].MovementModifier != 0) // up empty
+                            yield return tmp;
+                    }
+
+                    if (position.Y < HeightInTiles - 1)
+                    {
+                        tmp = new Point(position.X + 1, position.Y + 1); // lower right
+                        if (this[tmp].MovementModifier != 0 // lower right empty
+                            && this[position.X, position.Y + 1].MovementModifier != 0) // down empty
+                            yield return tmp;
+                    }
+                }
             }
         }
     }

@@ -16,6 +16,6 @@ namespace ThetaStarSharpExample.World
     {
         public Texture2D Texture;
         public Vector2 Position;
-        public IShape2 Collision;
+        public Polygon2 Collision;
     }
 }

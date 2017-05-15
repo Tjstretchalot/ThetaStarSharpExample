@@ -29,12 +29,14 @@ namespace ThetaStarSharpExample
         {
             Vector2 entityLocation = start.ToVector2();
             Vector2 endAsVector = end.ToVector2();
-            Vector2 movementDir = (endAsVector - entityLocation);
-            movementDir.Normalize();
+            Vector2 movementDir = Vector2.Normalize(endAsVector - entityLocation);
             float theta = (float)Math.Atan2(movementDir.Y, movementDir.X);
-            float sinTheta = (float)Math.Sin(theta);
-            float cosTheta = (float)Math.Cos(theta);
-            
+            float sinTheta = (float)Math.Abs(Math.Sin(theta));
+            float cosTheta = (float)Math.Abs(Math.Cos(theta));
+
+            float invSinTheta = 1 / sinTheta;
+            float invCosTheta = 1 / cosTheta;
+
             foreach (var pt in entity.Collision.GridPointsIntersectedAt(entityLocation))
             {
                 if (!grid.IsInGrid(pt))
@@ -42,35 +44,43 @@ namespace ThetaStarSharpExample
                 if (grid[pt].MovementModifier == 0)
                     return null;
             }
-            if(addOverlays)
+
+            if (addOverlays)
             {
                 grid.AddOverlay(entityLocation, Color.Red);
             }
 
             float distanceLeftSquared = (endAsVector - entityLocation).LengthSquared();
-            while (distanceLeftSquared > 1)
+            while (distanceLeftSquared > 0.01f)
             {
                 float movement = 1;
-                /*if (movementDir.X != 0 && movementDir.Y != 0)
+                if (movement > distanceLeftSquared * distanceLeftSquared)
+                    movement = (float)Math.Sqrt(distanceLeftSquared);
+                if (movementDir.X != 0 && movementDir.Y != 0)
                 {
-                    float distToX = 1;
-                    if (entityLocation.X != (int)entityLocation.X)
+                    foreach (var pt in entity.Collision.OrderedPoints)
                     {
-                        distToX = movementDir.X < 0 ? entityLocation.X - (int)entityLocation.X : 1 - (entityLocation.X - (int)entityLocation.X);
+                        var adjX = entityLocation.X + pt.X;
+                        var adjY = entityLocation.Y + pt.Y;
+                        float distToX = 1;
+                        if (adjX != (int)adjX)
+                        {
+                            distToX = movementDir.X < 0 ? adjX - (int)adjX : 1 - (adjX - (int)adjX);
+                        }
+
+                        var distAlongDirToNextX = distToX * invCosTheta;
+                        movement = Math.Min(movement, distAlongDirToNextX);
+
+                        float distToY = 1;
+                        if (adjY != (int)adjY)
+                        {
+                            distToY = movementDir.Y < 0 ? adjY - (int)adjY : 1 - (adjY - (int)adjY);
+                        }
+
+                        var distAlongDirToNextY = distToY * invSinTheta;
+                        movement = Math.Min(movement, distAlongDirToNextY);
                     }
-
-                    var distAlongDirToNextX = distToX / cosTheta;
-                    movement = Math.Min(movement, distAlongDirToNextX);
-
-                    float distToY = 1;
-                    if (entityLocation.Y != (int)entityLocation.Y)
-                    {
-                        distToY = movementDir.Y < 0 ? entityLocation.Y - (int)entityLocation.Y : 1 - (entityLocation.Y - (int)entityLocation.Y);
-                    }
-
-                    var distAlongDirToNextY = distToY / sinTheta;
-                    movement = Math.Min(movement, distAlongDirToNextY);
-                }*/
+                }
 
                 entityLocation += movementDir * movement;
                 foreach (var pt in entity.Collision.GridPointsIntersectedAt(entityLocation))
