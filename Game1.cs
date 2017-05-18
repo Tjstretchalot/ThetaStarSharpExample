@@ -170,6 +170,7 @@ namespace ThetaStarSharpExample
             {
                 if(currentPath != null)
                 {
+                    grid.CleanOverlays();
                     currentPath = ThetaStarPathfinder<Entity, Point, SimpleGrid>.CalculatePath(grid, PathAnalyzor.GetHeuristicCost, PathAnalyzor.GetActualCost, 1, entity, pathStart.Value, pathEnd.Value);
                    /* for (int i = 1; i < currentPath.Count; i++)
                     {
@@ -181,7 +182,7 @@ namespace ThetaStarSharpExample
 
         void HandleMouse(MouseState mouse)
         {
-            var gridPos = new Point(mouse.X / zoom + (int)(camera.X * zoom), mouse.Y / zoom + (int)(camera.Y * zoom));
+            var gridPos = new Point((int)(mouse.X / (float)zoom + camera.X), (int)(mouse.Y / (float)zoom + camera.Y));
             if (!grid.IsInGrid(gridPos))
                 return;
 
@@ -206,7 +207,7 @@ namespace ThetaStarSharpExample
                         grid[gridPos] = new Tile(pathEndTexture, 1);
                         pathEnd = gridPos;
 
-                        currentPath = ThetaStarPathfinder<Entity, Point, SimpleGrid>.CalculatePath(grid, PathAnalyzor.GetHeuristicCost, PathAnalyzor.GetActualCost, 1.01, entity, pathStart.Value, pathEnd.Value);
+                        currentPath = ThetaStarPathfinder<Entity, Point, SimpleGrid>.CalculatePath(grid, PathAnalyzor.GetHeuristicCost, PathAnalyzor.GetActualCost, 1.1, entity, pathStart.Value, pathEnd.Value);
                         /*for(int i = 1; i < currentPath.Count; i++)
                         {
                             PathAnalyzor.GetActualCostImpl(grid, entity, currentPath[i - 1], currentPath[i], true);

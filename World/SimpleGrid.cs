@@ -309,5 +309,10 @@ namespace ThetaStarSharpExample.World
                 }
             }
         }
+
+        public void OnExpanding(Point p)
+        {
+            AddOverlay(p.ToVector2(), Color.Green);
+        }
     }
 }

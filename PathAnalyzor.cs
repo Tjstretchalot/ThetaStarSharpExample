@@ -50,12 +50,17 @@ namespace ThetaStarSharpExample
                 grid.AddOverlay(entityLocation, Color.Red);
             }
 
+            bool first = true;
             float distanceLeftSquared = (endAsVector - entityLocation).LengthSquared();
             while (distanceLeftSquared > 0.01f)
             {
-                float movement = 1;
-                if (movement > distanceLeftSquared * distanceLeftSquared)
-                    movement = (float)Math.Sqrt(distanceLeftSquared);
+                bool atEnd = false;
+                float movement = 2;
+                if(first)
+                {
+                    first = false;
+                    movement = 0.01f;
+                }
                 if (movementDir.X != 0 && movementDir.Y != 0)
                 {
                     foreach (var pt in entity.Collision.OrderedPoints)
@@ -69,7 +74,7 @@ namespace ThetaStarSharpExample
                         }
 
                         var distAlongDirToNextX = distToX * invCosTheta;
-                        movement = Math.Min(movement, distAlongDirToNextX);
+                        movement = Math.Min(movement, distAlongDirToNextX + 0.01f); // we want to go *slightly* further than to the next x to see what we're about to intersect
 
                         float distToY = 1;
                         if (adjY != (int)adjY)
@@ -78,8 +83,13 @@ namespace ThetaStarSharpExample
                         }
 
                         var distAlongDirToNextY = distToY * invSinTheta;
-                        movement = Math.Min(movement, distAlongDirToNextY);
+                        movement = Math.Min(movement, distAlongDirToNextY + 0.01f); // we want to go *slightly* further than to the next y to see what we're about to intersect
                     }
+                }
+
+                if (movement * movement > distanceLeftSquared)
+                {
+                    break;
                 }
 
                 entityLocation += movementDir * movement;
